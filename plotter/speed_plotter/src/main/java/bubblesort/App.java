@@ -4,6 +4,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.knowm.xchart.BitmapEncoder;
+import org.knowm.xchart.BitmapEncoder.BitmapFormat;
 import org.knowm.xchart.QuickChart;
 import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
@@ -50,6 +52,7 @@ public class App {
 			c.getStyler().setLegendVisible(false);
 			c.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
 			c.getStyler().setMarkerSize(10);
+			BitmapEncoder.saveBitmap(c, "speed", BitmapFormat.PNG);	
 	
 			new SwingWrapper(c).displayChart();
 	

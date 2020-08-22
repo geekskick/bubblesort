@@ -15,5 +15,5 @@ void bubblebenchmark(benchmark::State& state){
     }
 }
 
-BENCHMARK(bubblebenchmark)->Range(8, 8<<10);
+BENCHMARK(bubblebenchmark)->DenseRange(0, 8000, 200);
 BENCHMARK_MAIN();

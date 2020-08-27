@@ -10,6 +10,8 @@ add_executable(bubblebenchmark benchmark.cpp)
 target_link_libraries(bubblesorttest PRIVATE ${CONAN_LIBS})
 target_link_libraries(bubblebenchmark PRIVATE ${CONAN_LIBS})
 
+target_compile_options(bubblebenchmark PRIVATE -Wall -Wextra -Werror -pedantic -Weffc++ -Ofast)
+
 set_target_properties(bubblesorttest bubblebenchmark PROPERTIES
     CXX_STANDARD 11
     CXX_STANDARD_REQUIRED YES

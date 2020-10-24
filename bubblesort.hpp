@@ -1,13 +1,6 @@
 #pragma once
 
 #include <array>
-
-template<typename T, typename ... Args>
-constexpr std::array<T, sizeof...(Args)> make_array(Args&& ... args){
-    return {std::forward<Args>(args)...};
-
-}
-
 template<typename Container>
 void bubblesort_inplace(typename Container::iterator begin, typename Container::iterator end){
     while(!std::is_sorted(begin, end)){

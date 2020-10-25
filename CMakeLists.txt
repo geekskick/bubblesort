@@ -7,10 +7,10 @@ conan_basic_setup()
 include(CTest)
 enable_testing()
 
-add_executable(bubblesorttest bubbletest.cpp)
-add_executable(quicksorttest quicktest.cpp)
-add_executable(bubblesortbenchmark bubblebenchmark.cpp)
-add_executable(quicksortbenchmark quicksortbenchmark.cpp)
+add_executable(bubblesorttest bubblesort/bubbletest.cpp)
+add_executable(quicksorttest quicksort/quicktest.cpp)
+add_executable(bubblesortbenchmark bubblesort/bubblebenchmark.cpp)
+add_executable(quicksortbenchmark quicksort/quicksortbenchmark.cpp)
 
 target_link_libraries(bubblesorttest PRIVATE ${CONAN_LIBS})
 target_link_libraries(quicksorttest PRIVATE ${CONAN_LIBS})
@@ -21,7 +21,11 @@ add_test(NAME bubblesorttest COMMAND bubblesorttest)
 add_test(NAME quicksorttest COMMAND quicksorttest)
 
 target_compile_options(bubblesortbenchmark PRIVATE -Wall -Wextra -Werror -pedantic -Weffc++ -Ofast)
+target_include_directories(bubblesortbenchmark PRIVATE .)
+target_include_directories(bubblesorttest PRIVATE .)
 target_compile_options(quicksortbenchmark PRIVATE -Wall -Wextra -Werror -pedantic -Weffc++ -Ofast)
+target_include_directories(quicksortbenchmark PRIVATE .)
+target_include_directories(quicksorttest PRIVATE .)
 
 set_target_properties(bubblesorttest bubblesortbenchmark quicksortbenchmark quicksorttest PROPERTIES
     CXX_STANDARD 11

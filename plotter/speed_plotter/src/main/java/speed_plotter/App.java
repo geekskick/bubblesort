@@ -9,6 +9,7 @@ import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -21,13 +22,17 @@ public class App {
 		System.out.println("App <results json file> ...");
 	}
 
+	static String basename(String path) {
+		String[] parts = path.split(File.separator);
+		return parts[parts.length-1];
+	}
 	public static void main(String[] args) throws IOException {
 		if (args.length < 1) {
 			usage();
 			return;
 		}
 
-		String title = args[0];
+		String title = basename(args[0]);
 
 		XYChart c = new XYChartBuilder().width(600).height(480)
 				.xAxisTitle("Vector Length").yAxisTitle("ns Taken").build();
@@ -36,7 +41,7 @@ public class App {
 		for (int i = 0; i < args.length; i++) {
 			String fname = args[i];
 			if (i > 0) {
-				title += " vs. " + fname;
+				title += " vs. " + basename(fname);
 			}
 			try (FileReader fr = new FileReader(fname)) {
 				JSONObject json = (JSONObject) jp.parse(fr);
@@ -58,7 +63,7 @@ public class App {
 						.map(BenchmarkRun::getNs_taken)
 						.collect(Collectors.toList());
 
-				c.addSeries(fname, xData, yData);
+				c.addSeries(basename(fname), xData, yData);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {

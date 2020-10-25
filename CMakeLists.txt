@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(bubblesort VERSION 0.1.0)
+project(bubblesort VERSION 1.0.0)
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
@@ -7,31 +7,51 @@ conan_basic_setup()
 include(CTest)
 enable_testing()
 
+add_executable(mergesorttest mergesort/mergetest.cpp)
 add_executable(bubblesorttest bubblesort/bubbletest.cpp)
 add_executable(quicksorttest quicksort/quicktest.cpp)
+
 add_executable(bubblesortbenchmark bubblesort/bubblebenchmark.cpp)
+add_executable(mergesortbenchmark mergesort/mergebenchmark.cpp)
 add_executable(quicksortbenchmark quicksort/quicksortbenchmark.cpp)
 
+target_link_libraries(mergesorttest PRIVATE ${CONAN_LIBS})
 target_link_libraries(bubblesorttest PRIVATE ${CONAN_LIBS})
 target_link_libraries(quicksorttest PRIVATE ${CONAN_LIBS})
+
 target_link_libraries(bubblesortbenchmark PRIVATE ${CONAN_LIBS})
+target_link_libraries(mergesortbenchmark PRIVATE ${CONAN_LIBS})
 target_link_libraries(quicksortbenchmark PRIVATE ${CONAN_LIBS})
 
+add_test(NAME mergesorttest COMMAND mergesorttest)
 add_test(NAME bubblesorttest COMMAND bubblesorttest)
 add_test(NAME quicksorttest COMMAND quicksorttest)
+
+target_compile_options(mergesortbenchmark PRIVATE -Wall -Wextra -Werror -pedantic -Weffc++ -Ofast)
+target_include_directories(mergesortbenchmark PRIVATE .)
+target_include_directories(mergesorttest PRIVATE .)
 
 target_compile_options(bubblesortbenchmark PRIVATE -Wall -Wextra -Werror -pedantic -Weffc++ -Ofast)
 target_include_directories(bubblesortbenchmark PRIVATE .)
 target_include_directories(bubblesorttest PRIVATE .)
+
 target_compile_options(quicksortbenchmark PRIVATE -Wall -Wextra -Werror -pedantic -Weffc++ -Ofast)
 target_include_directories(quicksortbenchmark PRIVATE .)
 target_include_directories(quicksorttest PRIVATE .)
 
-set_target_properties(bubblesorttest bubblesortbenchmark quicksortbenchmark quicksorttest PROPERTIES
+set_target_properties(bubblesorttest bubblesortbenchmark quicksortbenchmark quicksorttest mergesorttest mergesortbenchmark PROPERTIES
     CXX_STANDARD 11
     CXX_STANDARD_REQUIRED YES
     CXX_EXTENSIONS NO
     )
+
+add_custom_target(merge
+    COMMAND 
+        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/mergesortbenchmark --benchmark_out_format=json --benchmark_out=${PROJECT_SOURCE_DIR}/merge.json
+    DEPENDS
+        .${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/mergesortbenchmark
+    BYPRODUCTS
+        ${PROJECT_SOURCE_DIR}/merge.json)
 
 add_custom_target(quick
     COMMAND 
@@ -57,8 +77,8 @@ add_custom_target(plotter
 
 add_custom_target(graph
    COMMAND
-        java -cp target/speed_plotter-1.0-jar-with-dependencies.jar bubblesort.App ${PROJECT_SOURCE_DIR}/quick.json ${PROJECT_SOURCE_DIR}/bubble.json
+   java -cp target/speed_plotter-1.0-jar-with-dependencies.jar speed_plotter.App ${PROJECT_SOURCE_DIR}/quick.json ${PROJECT_SOURCE_DIR}/bubble.json ${PROJECT_SOURCE_DIR}/merge.json
    WORKING_DIRECTORY
         ${PROJECT_SOURCE_DIR}/plotter/speed_plotter
    DEPENDS
-        plotter quick bubble)
+        plotter quick bubble merge)

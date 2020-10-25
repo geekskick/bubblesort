@@ -1,4 +1,4 @@
-# bubblesort vs quicksort benchmarker
+# bubblesort vs quicksort vs mergesort
 I did this as a kata of sorts - to get in the zone with TDD techniques and using tools. I also have been learning Java and wanted to use it for something. 
 
 ![speed graph](speed.png)

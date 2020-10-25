@@ -1,11 +1,9 @@
-package bubblesort;
+package speed_plotter;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.knowm.xchart.BitmapEncoder;
-import org.knowm.xchart.BitmapEncoder.BitmapFormat;
 import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
@@ -20,23 +18,26 @@ import java.util.stream.Collectors;
 
 public class App {
 	static void usage() {
-		System.out.println("App <results json file> <another json file>");
+		System.out.println("App <results json file> ...");
 	}
 
 	public static void main(String[] args) throws IOException {
-		if (args.length != 2) {
+		if (args.length < 1) {
 			usage();
 			return;
 		}
 
-		String title = args[0] + " vs. " + args[1];
+		String title = args[0];
 
-		XYChart c = new XYChartBuilder().width(600).height(480).title(title)
+		XYChart c = new XYChartBuilder().width(600).height(480)
 				.xAxisTitle("Vector Length").yAxisTitle("ns Taken").build();
 		JSONParser jp = new JSONParser();
-		
-		for (int i = 0; i < 2; i++) {
+
+		for (int i = 0; i < args.length; i++) {
 			String fname = args[i];
+			if (i > 0) {
+				title += " vs. " + fname;
+			}
 			try (FileReader fr = new FileReader(fname)) {
 				JSONObject json = (JSONObject) jp.parse(fr);
 				JSONArray benchmarks = (JSONArray) json.get("benchmarks");
@@ -67,8 +68,8 @@ public class App {
 			}
 		}
 		c.getStyler().setLegendVisible(true);
-		c.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
-		c.getStyler().setMarkerSize(10);
+		c.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
+		c.setTitle(title);
 
 		new SwingWrapper(c).displayChart();
 

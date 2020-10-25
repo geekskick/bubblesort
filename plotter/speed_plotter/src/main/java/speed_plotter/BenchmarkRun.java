@@ -1,4 +1,4 @@
-package bubblesort;
+package speed_plotter;
 
 public class BenchmarkRun {
 	@Override
